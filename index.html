@@ -35,7 +35,6 @@
   
   /* --- Главный экран --- */
   #mainScreen { display: block; animation: fadeIn 0.3s ease; }
-  #mainScreen.fade-out { opacity: 0; transform: scale(0.98); transition: all 0.3s ease; }
   
   .header { margin-bottom: 20px; }
   .header h1 { font-size: 28px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 4px; }
@@ -111,7 +110,6 @@
   
   .detail-header { display: flex; gap: 16px; margin-bottom: 24px; align-items: center; position: relative; }
   
-  /* Свечение под иконкой */
   .detail-icon-glow {
     position: absolute; left: 0; top: 0; width: 96px; height: 96px;
     border-radius: 22px; z-index: -1; filter: blur(20px); opacity: 0.6;
@@ -245,6 +243,22 @@
 
   const apps = [
     {
+      id: 'deco',
+      name: 'Deco-Island',
+      desc: 'Тебе нужно делать всё, чтобы выжить: у тебя есть немного денег, и ты можешь заработать ещё — купить еду или улучшить свою базу!',
+      icon: 'https://i.postimg.cc/3xd5qYm5/IMG-20261108-194254-964.jpg',
+      url: 'https://t.me/RazeRealLife/49',
+      developer: 'Raze Studio', // Можно поменять, если друг хочет свой ник
+      rating: '4.5',
+      reviewsCount: '89',
+      color: '#8B4513', // Коричневый цвет для свечения
+      fullDesc: 'Добро пожаловать на остров! Тебе нужно делать всё, чтобы выжить: у тебя есть немного денег, и ты можешь заработать ещё — купить еду или улучшить свою базу для выживания! Исследуй, развивайся и не дай себе пропасть в этом суровом месте.',
+      reviews: [
+        { author: 'Игорь', stars: '★★★★★', text: 'Очень интересная игра на выживание. Затягивает!' },
+        { author: 'Данил', stars: '★★★★☆', text: 'Норм, но хотелось бы больше ресурсов.' }
+      ]
+    },
+    {
       id: 'magnat',
       name: 'Номерной Магнат',
       desc: 'Кликер-бизнес, где ты скупаешь красивые номера, прокачиваешь их и продаешь втридорога.',
@@ -314,12 +328,10 @@
 
   let currentAppUrl = '';
 
-  // Рендер каталога
   const grid = document.getElementById('appsGrid');
   apps.forEach((app, index) => {
     const card = document.createElement('div');
     card.className = 'app-card';
-    // Задержка появления для каждой карточки (staggered)
     card.style.animationDelay = `${index * 0.1}s`;
     
     card.innerHTML = `
@@ -346,7 +358,6 @@
     const main = document.getElementById('mainScreen');
     const detail = document.getElementById('detailScreen');
     
-    // Анимация кроссфейда (исчезновение)
     detail.style.opacity = '0';
     detail.style.transform = 'translateY(20px)';
     
@@ -356,7 +367,6 @@
       detail.style.transform = '';
       
       main.style.display = 'block';
-      // Форсируем рефлоу для перезапуска анимации появления карточек
       main.style.animation = 'none';
       main.offsetHeight; 
       main.style.animation = '';
@@ -400,7 +410,6 @@
     main.style.display = 'none';
     detail.style.display = 'block';
     
-    // Форсируем рефлоу для перезапуска анимации
     detail.style.animation = 'none';
     detail.offsetHeight; 
     detail.style.animation = '';
