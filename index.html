@@ -15,6 +15,8 @@
     --btn-text: var(--tg-theme-button-text-color, #ffffff);
     --border: rgba(150,150,150,0.2);
     --star: #F7B801;
+    --badge-hit: linear-gradient(135deg, #ff4757, #ff6b81);
+    --badge-new: linear-gradient(135deg, #00d2d3, #48dbfb);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
   body {
@@ -28,17 +30,31 @@
     from { opacity: 0; transform: translateY(20px) scale(0.95); }
     to { opacity: 1; transform: translateY(0) scale(1); }
   }
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
   
   /* --- Главный экран --- */
   #mainScreen { display: block; animation: fadeIn 0.3s ease; }
   
-  .header { margin-bottom: 20px; }
+  .header { margin-bottom: 20px; display: flex; justify-content: space-between; align-items: flex-end; }
   .header h1 { font-size: 28px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 4px; }
   .header p { font-size: 14px; color: var(--hint); font-weight: 500; }
+
+  /* Топ установок (Карусель) */
+  .top-section { margin-bottom: 24px; }
+  .top-title { font-size: 16px; font-weight: 800; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+  .top-scroll { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px; scrollbar-width: none; }
+  .top-scroll::-webkit-scrollbar { display: none; }
+  .top-item {
+    background: var(--card); border-radius: 16px; padding: 12px;
+    display: flex; align-items: center; gap: 12px; min-width: 220px;
+    border: 1px solid var(--border); cursor: pointer;
+    transition: transform 0.2s var(--ease-spring, cubic-bezier(0.34, 1.56, 0.64, 1));
+  }
+  .top-item:active { transform: scale(0.96); }
+  .top-item img { width: 40px; height: 40px; border-radius: 10px; object-fit: cover; }
+  .top-item-info { display: flex; flex-direction: column; }
+  .top-item-name { font-size: 14px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 140px; }
+  .top-item-rating { font-size: 12px; color: var(--star); font-weight: 700; }
 
   /* Баннер */
   .featured-banner {
@@ -65,7 +81,7 @@
     background: var(--card); border-radius: 20px; padding: 16px;
     display: flex; align-items: center; gap: 16px;
     cursor: pointer; border: 1px solid var(--border);
-    opacity: 0;
+    opacity: 0; position: relative;
     animation: cardEnter 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
     transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s;
   }
@@ -82,10 +98,21 @@
   .app-icon img { width: 100%; height: 100%; object-fit: cover; }
 
   .app-info { flex: 1; min-width: 0; }
-  .app-name-row { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+  .app-name-row { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; flex-wrap: wrap; }
   .app-name { font-size: 17px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  
+  /* Бейджи */
+  .badge {
+    font-size: 9.5px; font-weight: 800; color: #fff;
+    padding: 3px 8px; border-radius: 6px; text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .badge.hit { background: var(--badge-hit); }
+  .badge.new { background: var(--badge-new); color: #0f2b28; }
+
   .app-rating-badge { font-size: 11px; font-weight: 700; color: var(--star); display: flex; align-items: center; gap: 2px; }
   .app-desc { font-size: 13px; color: var(--hint); font-weight: 500; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .app-installs { font-size: 11px; color: var(--hint); margin-top: 4px; opacity: 0.8; }
   
   .download-btn-small {
     background: var(--btn); color: var(--btn-text);
@@ -130,6 +157,7 @@
   
   .rating-row { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; }
   .stars { color: var(--star); font-size: 16px; letter-spacing: 2px; }
+  .installs-count { font-size: 13px; color: var(--hint); margin-top: 4px; }
   
   .download-btn-large {
     width: 100%; background: var(--btn); color: var(--btn-text);
@@ -139,7 +167,7 @@
   }
   .download-btn-large:active { transform: scale(0.96); }
   
-  .section-title { font-size: 18px; font-weight: 700; margin-bottom: 12px; margin-top: 24px; }
+  .section-title { font-size: 18px; font-weight: 700; margin-bottom: 12px; margin-top: 24px; display: flex; justify-content: space-between; align-items: center; }
   .full-desc { font-size: 14px; line-height: 1.5; color: var(--text); opacity: 0.9; margin-bottom: 24px; }
   
   .review-card { margin-bottom: 16px; border-bottom: 1px solid var(--border); padding-bottom: 16px; }
@@ -148,7 +176,13 @@
   .review-stars { font-size: 12px; color: var(--star); letter-spacing: 1px; }
   .review-text { font-size: 13px; color: var(--hint); line-height: 1.4; }
 
-  /* --- Шторка --- */
+  .btn-write-review {
+    background: var(--bg); border: 1px solid var(--border);
+    color: var(--text); padding: 8px 14px; border-radius: 10px;
+    font-size: 13px; font-weight: 600; cursor: pointer;
+  }
+
+  /* --- Шторки --- */
   .sheet-backdrop {
     position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px);
     opacity: 0; pointer-events: none; transition: opacity 0.3s;
@@ -173,16 +207,35 @@
   }
   .sheet-actions .cancel { background: var(--bg); color: var(--text); }
   .sheet-actions .confirm { background: var(--btn); color: var(--btn-text); }
+  
+  /* Форма отзыва */
+  .star-rating { display: flex; justify-content: center; gap: 8px; margin-bottom: 16px; font-size: 32px; cursor: pointer; }
+  .star-rating span { color: #444; transition: color 0.2s; }
+  .star-rating span.active { color: var(--star); }
+  .review-form input, .review-form textarea {
+    width: 100%; padding: 12px; border-radius: 12px;
+    border: 1px solid var(--border); background: var(--bg); color: var(--text);
+    margin-bottom: 12px; font-size: 14px; outline: none;
+  }
+  .review-form textarea { resize: none; height: 80px; }
 </style>
 </head>
 <body>
 
 <div id="mainScreen">
   <div class="header">
-    <h1>Мои приложения</h1>
-    <p>Только лучшие продукты от Raze Studio</p>
+    <div>
+      <h1>Мои приложения</h1>
+      <p>Только лучшие продукты от Raze Studio</p>
+    </div>
   </div>
   
+  <!-- Топ установок -->
+  <div class="top-section">
+    <div class="top-title">🔥 Топ недели</div>
+    <div class="top-scroll" id="topScroll"></div>
+  </div>
+
   <!-- Баннер -->
   <div class="featured-banner">
     <span class="featured-tag">Выбор редакции</span>
@@ -208,6 +261,7 @@
         <span class="stars" id="dStars"></span>
         <span id="dReviewsCount" style="color: var(--hint); font-weight: 500;"></span>
       </div>
+      <div class="installs-count" id="dInstalls"></div>
     </div>
   </div>
 
@@ -216,10 +270,14 @@
   <div class="section-title">Описание</div>
   <div class="full-desc" id="dFullDesc"></div>
   
-  <div class="section-title">Отзывы</div>
+  <div class="section-title">
+    <span>Отзывы</span>
+    <button class="btn-write-review" onclick="openReviewForm()">Написать</button>
+  </div>
   <div id="reviewsList"></div>
 </div>
 
+<!-- Шторка скачивания -->
 <div class="sheet-backdrop" id="downloadSheet" onclick="if(event.target===this)closeDownloadSheet()">
   <div class="sheet">
     <div class="sheet-icon">📥</div>
@@ -232,47 +290,106 @@
   </div>
 </div>
 
+<!-- Шторка отзыва -->
+<div class="sheet-backdrop" id="reviewSheet" onclick="if(event.target===this)closeReviewSheet()">
+  <div class="sheet">
+    <div class="sheet-title">Оставить отзыв</div>
+    <div class="sheet-text" style="margin-bottom: 12px;">Ваш отзыв увидите только вы (он сохранится на этом устройстве).</div>
+    <div class="review-form">
+      <div class="star-rating" id="reviewStars">
+        <span data-val="1">★</span>
+        <span data-val="2">★</span>
+        <span data-val="3">★</span>
+        <span data-val="4">★</span>
+        <span data-val="5">★</span>
+      </div>
+      <input type="text" id="reviewName" placeholder="Ваше имя" style="margin-bottom: 8px;">
+      <textarea id="reviewText" placeholder="Что вы думаете об этой игре?"></textarea>
+      <div class="sheet-actions" style="margin-top: 12px;">
+        <button class="cancel" onclick="closeReviewSheet()">Отмена</button>
+        <button class="confirm" onclick="saveReview()">Отправить</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
   const tg = window.Telegram.WebApp;
   tg.expand();
   tg.ready();
   
-  tg.BackButton.onClick(() => {
-    goHome();
-  });
+  tg.BackButton.onClick(() => { goHome(); });
 
-    const apps = [
+  const apps = [
     {
-      id: 'deco',
+      id: 'mymoney',
+      name: 'My Money',
+      desc: 'Твой личный финансовый помощник. Следи за балансом, записывай траты и копи на цели. Офлайн.',
+      icon: 'https://i.postimg.cc/zfq4fs0Q/IMG-20261026-203103-287.jpg',
+      url: 'https://t.me/MyMoneyAppRaze/30',
+      developer: 'Raze Studio',
+      rating: '4.9',
+      reviewsCount: '856',
+      installs: '10 000+',
+      badge: 'hit',
+      color: '#2b6cb0',
+      fullDesc: 'Надоело гадать, куда уходят карманные деньги? My Money — это простой и красивый трекер расходов и доходов, созданный специально для школьников и студентов. Записывай траты за 10 секунд, ставь финансовые цели (наушники, игры, подарки) и смотри на наглядных графиках, куда утекает твой бюджет. Все данные хранятся только на твоем устройстве, никакой регистрации и серверов.',
+      reviews: [
+        { author: 'Анна', stars: '★★★★★', text: 'Очень красивый дизайн! Наконец-то начала копить на мечту.' },
+        { author: 'Дмитрий', stars: '★★★★☆', text: 'Минус в том, что нет облака, но зато безопасно. Приложение топ.' }
+      ]
+    },
+    {
+      id: 'deco_real',
+      name: 'Deco-Real life',
+      desc: '2D-игра про реальную жизнь: работа, кредиты, тюрьма, отдых, покупка машин, квартир и гаражей.',
+      icon: 'https://i.postimg.cc/gjMdwKfm/IMG-20261108-203719-604.jpg',
+      url: 'https://t.me/RazeStore_App/12',
+      developer: 'Deco-Deni',
+      rating: '4.7',
+      reviewsCount: '34',
+      installs: '1 000+',
+      badge: 'new',
+      color: '#2d3436',
+      fullDesc: '2D-игра про реальную жизнь: работа, кредиты, тюрьма, отдых, покупка машин, квартир и гаражей. Построй свою жизнь с нуля и добейся успеха!',
+      reviews: [
+        { author: 'Артем', stars: '★★★★★', text: 'Крутая игра! Уже купил себе тачку.' },
+        { author: 'Илья', stars: '★★★★☆', text: 'Норм, но кредиты душат.' }
+      ]
+    },
+    {
+      id: 'deco_island',
       name: 'Deco-Island',
       desc: 'Тебе нужно делать всё, чтобы выжить: у тебя есть немного денег, и ты можешь заработать ещё — купить еду или улучшить свою базу!',
       icon: 'https://i.postimg.cc/3xd5qYm5/IMG-20261108-194254-964.jpg',
       url: 'https://t.me/RazeRealLife/49',
-      developer: 'Deco-Deni', 
+      developer: 'Deco-Deni',
       rating: '4.5',
       reviewsCount: '89',
+      installs: '500+',
+      badge: 'new',
       color: '#8B4513',
       fullDesc: 'Добро пожаловать на остров! Тебе нужно делать всё, чтобы выжить: у тебя есть немного денег, и ты можешь заработать ещё — купить еду или улучшить свою базу для выживания! Исследуй, развивайся и не дай себе пропасть в этом суровом месте.',
       reviews: [
-        { author: 'Игорь', stars: '★★★★★', text: 'Очень интересная игра на выживание. Затягивает!' },
-        { author: 'Данил', stars: '★★★★☆', text: 'Норм, но хотелось бы больше ресурсов.' }
+        { author: 'Игорь', stars: '★★★★★', text: 'Очень интересная игра на выживание. Затягивает!' }
       ]
     },
     {
       id: 'magnat',
       name: 'Номерной Магнат',
       desc: 'Кликер-бизнес, где ты скупаешь красивые номера, прокачиваешь их и продаешь втридорога.',
-      icon: 'https://i.postimg.cc/LXX7tzd1/Screenshot-2026-09-18-07-40-36-183-com-camerasideas-trimmer-edit.jpg', 
+      icon: 'https://i.postimg.cc/LXX7tzd1/Screenshot-2026-09-18-07-40-36-183-com-camerasideas-trimmer-edit.jpg',
       url: 'https://t.me/NomernoyMagnat/3',
       developer: 'Raze Studio',
       rating: '4.8',
       reviewsCount: '1 204',
+      installs: '5 000+',
+      badge: null,
       color: '#333',
       fullDesc: 'Погрузись в мир автомобильных номеров! В этой увлекательной игре-кликере тебе предстоит стать настоящим магнатом. Скупай редкие и красивые автомобильные номера, прокачивай свою гарантию, покупай бусты и перепродавай номера другим игрокам за огромные деньги. Идеальный тайм-киллер с простым геймплеем и глубокой экономикой.',
       reviews: [
         { author: 'Максим', stars: '★★★★★', text: 'Затягивает с первых минут. Уже накопил на золотой номер!' },
-        { author: 'Алексей', stars: '★★★★☆', text: 'Норм игра, но иногда долго копить на дорогие бусты. В целом топ.' },
-        { author: 'Иван', stars: '★★★★★', text: 'Лучший кликер про номера, что я видел. Интерфейс огонь.' }
+        { author: 'Алексей', stars: '★★★★☆', text: 'Норм игра, но иногда долго копить на дорогие бусты.' }
       ]
     },
     {
@@ -284,28 +401,12 @@
       developer: 'Raze Studio',
       rating: '4.7',
       reviewsCount: '342',
+      installs: '2 000+',
+      badge: null,
       color: '#ff8c00',
-      fullDesc: 'Сколько у тебя реально денег в кармане прямо сейчас? My Moneybox поможет быстро посчитать физическую наличность. Просто нажимай на плюсики напротив банкнот и монет, и приложение мгновенно покажет общую сумму. Больше не нужно пересчитывать мелочь вручную перед походом в магазин.',
+      fullDesc: 'Сколько у тебя реально денег в кармане прямо сейчас? My Moneybox поможет быстро посчитать физическую наличность. Просто нажимай на плюсики напротив банкнот и монет, и приложение мгновенно покажет общую сумму.',
       reviews: [
-        { author: 'Светлана', stars: '★★★★★', text: 'Очень удобно для копилки. Просто и со вкусом.' },
-        { author: 'Олег', stars: '★★★★☆', text: 'Быстро считает. Хотелось бы еще функцию сдачи.' }
-      ]
-    },
-    {
-      id: 'mymoney',
-      name: 'My Money',
-      desc: 'Твой личный финансовый помощник. Следи за балансом, записывай траты и копи на цели. Офлайн.',
-      icon: 'https://i.postimg.cc/zfq4fs0Q/IMG-20261026-203103-287.jpg',
-      url: 'https://t.me/MyMoneyAppRaze/30',
-      developer: 'Raze Studio',
-      rating: '4.9',
-      reviewsCount: '856',
-      color: '#2b6cb0',
-      fullDesc: 'Надоело гадать, куда уходят карманные деньги? My Money — это простой и красивый трекер расходов и доходов, созданный специально для школьников и студентов. Записывай траты за 10 секунд, ставь финансовые цели (наушники, игры, подарки) и смотри на наглядных графиках, куда утекает твой бюджет. Все данные хранятся только на твоем устройстве, никакой регистрации и серверов.',
-      reviews: [
-        { author: 'Анна', stars: '★★★★★', text: 'Очень красивый дизайн! Наконец-то начала копить на мечту.' },
-        { author: 'Дмитрий', stars: '★★★★☆', text: 'Минус в том, что нет облака, но зато безопасно. Приложение топ.' },
-        { author: 'Егор', stars: '★★★★☆', text: 'Классная статистика по неделям. Сразу видно, где перетратил.' }
+        { author: 'Светлана', stars: '★★★★★', text: 'Очень удобно для копилки.' }
       ]
     },
     {
@@ -317,30 +418,60 @@
       developer: 'Raze Studio',
       rating: '4.6',
       reviewsCount: '128',
+      installs: '1 000+',
+      badge: null,
       color: '#4CAF50',
       fullDesc: 'Проверь свои знания географии! Увлекательная викторина с флагами и столицами стран мира. Играй и расширяй свой кругозор.',
       reviews: [
-        { author: 'Павел', stars: '★★★★★', text: 'Крутая викторина, узнал много нового!' },
-        { author: 'Мария', stars: '★★★★☆', text: 'Иногда сложно, но затягивает.' }
+        { author: 'Павел', stars: '★★★★★', text: 'Крутая викторина, узнал много нового!' }
       ]
     }
   ];
+
+  // Сортировка топ-3 по установкам (фейково, просто по числу)
+  const topApps = [...apps].sort((a,b) => parseInt(b.installs) - parseInt(a.installs)).slice(0, 3);
+
   let currentAppUrl = '';
+  let currentAppIndex = -1;
 
   const grid = document.getElementById('appsGrid');
+  const topScroll = document.getElementById('topScroll');
+
+  // Рендер топа
+  topApps.forEach(app => {
+    const item = document.createElement('div');
+    item.className = 'top-item';
+    item.innerHTML = `
+      <img src="${app.icon}" alt="${app.name}">
+      <div class="top-item-info">
+        <div class="top-item-name">${app.name}</div>
+        <div class="top-item-rating">★ ${app.rating}</div>
+      </div>
+    `;
+    item.onclick = () => showDetail(apps.findIndex(a => a.id === app.id));
+    topScroll.appendChild(item);
+  });
+
+  // Рендер каталога
   apps.forEach((app, index) => {
     const card = document.createElement('div');
     card.className = 'app-card';
-    card.style.animationDelay = `${index * 0.1}s`;
+    card.style.animationDelay = `${index * 0.08}s`;
     
+    let badgeHtml = '';
+    if (app.badge === 'hit') badgeHtml = '<span class="badge hit">Хит</span>';
+    if (app.badge === 'new') badgeHtml = '<span class="badge new">Новинка</span>';
+
     card.innerHTML = `
       <div class="app-icon"><img src="${app.icon}" alt="${app.name}" loading="lazy"></div>
       <div class="app-info">
         <div class="app-name-row">
           <div class="app-name">${app.name}</div>
-          <div class="app-rating-badge">★ ${app.rating}</div>
+          ${badgeHtml}
         </div>
+        <div class="app-rating-badge">★ ${app.rating}</div>
         <div class="app-desc">${app.desc}</div>
+        <div class="app-installs">Установлено ${app.installs} раз</div>
       </div>
       <button class="download-btn-small" onclick="event.stopPropagation(); openLink('${app.url}')">Скачать</button>
     `;
@@ -376,6 +507,7 @@
   }
 
   function showDetail(index) {
+    currentAppIndex = index;
     const app = apps[index];
     currentAppUrl = app.url;
 
@@ -386,10 +518,33 @@
     document.getElementById('dRating').textContent = app.rating;
     document.getElementById('dStars').textContent = '★★★★★';
     document.getElementById('dReviewsCount').textContent = `(${app.reviewsCount})`;
+    document.getElementById('dInstalls').textContent = `Установлено ${app.installs} раз`;
     document.getElementById('dFullDesc').textContent = app.fullDesc;
+
+    // Подгружаем локальные отзывы
+    const savedReviews = JSON.parse(localStorage.getItem('user_reviews') || '{}');
+    const myReview = savedReviews[app.id];
 
     const reviewsList = document.getElementById('reviewsList');
     reviewsList.innerHTML = '';
+    
+    // Сначала показываем отзыв пользователя (если есть)
+    if (myReview) {
+      const rCard = document.createElement('div');
+      rCard.className = 'review-card';
+      rCard.style.borderLeft = '3px solid var(--btn)';
+      rCard.style.paddingLeft = '10px';
+      rCard.innerHTML = `
+        <div class="review-header">
+          <span class="review-author">${myReview.name} (Вы)</span>
+          <span class="review-stars">${'★'.repeat(myReview.stars)}${'☆'.repeat(5-myReview.stars)}</span>
+        </div>
+        <div class="review-text">${myReview.text}</div>
+      `;
+      reviewsList.appendChild(rCard);
+    }
+
+    // Потом базовые
     app.reviews.forEach(review => {
       const rCard = document.createElement('div');
       rCard.className = 'review-card';
@@ -427,9 +582,7 @@
 
   function confirmDownload() {
     closeDownloadSheet();
-    setTimeout(() => {
-      openLink(currentAppUrl);
-    }, 300);
+    setTimeout(() => { openLink(currentAppUrl); }, 300);
   }
 
   function openLink(url) {
@@ -438,6 +591,64 @@
     } else {
       window.open(url, '_blank');
     }
+  }
+
+  /* =====================================================
+     ОТЗЫВЫ
+     ===================================================== */
+  let reviewRating = 5;
+
+  function openReviewForm() {
+    document.getElementById('reviewSheet').classList.add('show');
+    reviewRating = 5;
+    updateStarRating();
+    
+    // Если уже писал, подставить старое
+    const savedReviews = JSON.parse(localStorage.getItem('user_reviews') || '{}');
+    const app = apps[currentAppIndex];
+    const myReview = savedReviews[app.id];
+    if (myReview) {
+      document.getElementById('reviewName').value = myReview.name;
+      document.getElementById('reviewText').value = myReview.text;
+      reviewRating = myReview.stars;
+      updateStarRating();
+    } else {
+      document.getElementById('reviewName').value = '';
+      document.getElementById('reviewText').value = '';
+    }
+  }
+
+  function closeReviewSheet() {
+    document.getElementById('reviewSheet').classList.remove('show');
+  }
+
+  const starEls = document.querySelectorAll('#reviewStars span');
+  starEls.forEach(el => {
+    el.addEventListener('click', () => {
+      reviewRating = parseInt(el.dataset.val);
+      updateStarRating();
+    });
+  });
+
+  function updateStarRating() {
+    starEls.forEach(el => {
+      el.classList.toggle('active', parseInt(el.dataset.val) <= reviewRating);
+    });
+  }
+
+  function saveReview() {
+    const name = document.getElementById('reviewName').value.trim() || 'Аноним';
+    const text = document.getElementById('reviewText').value.trim();
+    if (!text) { tg.showAlert('Напиши текст отзыва'); return; }
+
+    const app = apps[currentAppIndex];
+    const savedReviews = JSON.parse(localStorage.getItem('user_reviews') || '{}');
+    savedReviews[app.id] = { name, text, stars: reviewRating };
+    localStorage.setItem('user_reviews', JSON.stringify(savedReviews));
+    
+    closeReviewSheet();
+    showDetail(currentAppIndex); // Перерисовать
+    tg.showAlert('Отзыв сохранен! (Виден только вам)');
   }
 </script>
 </body>
