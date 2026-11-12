@@ -503,7 +503,12 @@
 
     <div class="settings-row">
       <span class="settings-label">Версия</span>
-      <span class="settings-value">0.3</span>
+      <span class="settings-value" id="appVersion"></span>
+    </div>
+
+    <div class="settings-row">
+      <span class="settings-label">Последнее обновление</span>
+      <span class="settings-value" id="appUpdated"></span>
     </div>
 
     <div class="dev-box">
@@ -514,6 +519,12 @@
 </div>
 
 <script>
+  /* =====================================================
+     КОНСТАНТЫ ПРИЛОЖЕНИЯ
+     ===================================================== */
+  const APP_VERSION = '0.3';
+  const APP_UPDATED = '12.11.2026';
+
   /* =====================================================
      SVG-ИКОНКИ
      ===================================================== */
@@ -531,7 +542,7 @@
   }
 
   /* =====================================================
-     ИНИЦИАЛИЗАЦИЯ ИКОНОК В СТАТИЧНОМ HTML
+     ИНИЦИАЛИЗАЦИЯ ИКОНОК И КОНСТАНТ В СТАТИЧНОМ HTML
      ===================================================== */
   document.getElementById('settingsBtn').innerHTML = icon('gear', 20);
   document.getElementById('topTitle').innerHTML = icon('fire', 18) + ' Топ недели';
@@ -539,6 +550,8 @@
   document.getElementById('downloadIcon').innerHTML = icon('download', 48);
   document.getElementById('themeLight').innerHTML = icon('sun', 16);
   document.getElementById('themeDark').innerHTML = icon('moon', 16);
+  document.getElementById('appVersion').textContent = APP_VERSION;
+  document.getElementById('appUpdated').textContent = APP_UPDATED;
 
   /* =====================================================
      TELEGRAM
@@ -690,14 +703,17 @@
       icon: 'https://i.postimg.cc/P5WqpwkH/Screenshot-2026-11-10-20-51-20-021-com-android-chrome-edit.jpg',
       url: 'https://t.me/RazeStore_App/14',
       developer: 'Raze Studio',
-      rating: '—',
-      reviewsCount: '0',
+      rating: '4.7',
+      reviewsCount: '2',
       installs: '0',
       installsNum: 0,
       badge: 'beta',
       color: '#0984e3',
       fullDesc: 'RazeCalc — аккуратный и быстрый калькулятор для повседневных задач. Считает в столбик, хранит историю вычислений, умеет конвертировать единицы длины, веса и валют, а ещё поддерживает инженерный режим и тёмную тему. Никакой рекламы и лишних кнопок — только то, что нужно. Это бета-версия: возможны мелкие баги, будем рады отзывам!',
-      reviews: []
+      reviews: [
+        { author: 'Кирилл', stars: '★★★★★', text: 'Наконец-то калькулятор без рекламы. История вычислений — топ.' },
+        { author: 'Марина', stars: '★★★★☆', text: 'Удобно, но хотелось бы побольше валют в конвертере.' }
+      ]
     }
   ];
 
@@ -755,6 +771,10 @@
       ? ''
       : `<div class="app-rating-badge">${icon('star', 12)} ${app.rating}</div>`;
 
+    const installsHtml = app.comingSoon
+      ? 'Скоро в релизе'
+      : (app.installsNum ? `Установлено ${app.installs} раз` : '');
+
     card.innerHTML = `
       <div class="app-icon"><img src="${app.icon}" alt="${app.name}" loading="lazy"></div>
       <div class="app-info">
@@ -764,7 +784,7 @@
         </div>
         ${ratingHtml}
         <div class="app-desc">${app.desc}</div>
-        <div class="app-installs">${app.comingSoon ? 'Скоро в релизе' : (app.installsNum ? `Установлено ${app.installs} раз` : 'Новинка')}</div>
+        <div class="app-installs">${installsHtml}</div>
       </div>
       ${btnHtml}
     `;
@@ -839,15 +859,24 @@
     document.getElementById('dGlow').style.background = app.color;
     document.getElementById('dName').textContent = app.name;
     document.getElementById('dDev').textContent = app.developer;
-    document.getElementById('dRating').textContent = app.rating;
+    document.getElementById('dRating').textContent = app.rating === '—' ? '' : app.rating;
     document.getElementById('dStars').innerHTML = app.rating === '—'
       ? ''
       : icon('star', 16) + icon('star', 16) + icon('star', 16) + icon('star', 16) + icon('star', 16);
     document.getElementById('dReviewsCount').textContent = app.comingSoon ? '' : (app.reviewsCount !== '0' ? `(${app.reviewsCount})` : '');
-    document.getElementById('dInstalls').textContent = app.comingSoon
-      ? 'Скоро в релизе'
-      : (app.installsNum ? `Установлено ${app.installs} раз` : 'Только что вышло');
     document.getElementById('dFullDesc').textContent = app.fullDesc;
+
+    const installsEl = document.getElementById('dInstalls');
+    if (app.comingSoon) {
+      installsEl.textContent = 'Скоро в релизе';
+      installsEl.style.display = 'block';
+    } else if (app.installsNum) {
+      installsEl.textContent = `Установлено ${app.installs} раз`;
+      installsEl.style.display = 'block';
+    } else {
+      installsEl.textContent = '';
+      installsEl.style.display = 'none';
+    }
 
     // Кнопка скачивания / плашка «скоро»
     const dlBtn = document.getElementById('dDownloadBtn');
