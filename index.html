@@ -26,6 +26,7 @@
     -ms-user-select: none;
     user-select: none;
     -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
   }
   input, textarea {
     -webkit-user-select: text;
@@ -59,6 +60,10 @@
     --border: rgba(150,150,150,0.2);
   }
 
+  /* SVG-иконки */
+  .svg-icon { display: inline-flex; vertical-align: middle; }
+  .svg-icon svg { width: 100%; height: 100%; display: block; }
+
   /* --- Анимации --- */
   @keyframes cardEnter {
     from { opacity: 0; transform: translateY(20px) scale(0.95); }
@@ -69,7 +74,7 @@
   /* --- Главный экран --- */
   #mainScreen { display: block; animation: fadeIn 0.3s ease; }
   
-  .header { margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+  .header { margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; }
   .header h1 { font-size: 28px; font-weight: 800; letter-spacing: -0.5px; }
 
   .settings-btn {
@@ -83,12 +88,69 @@
     display: flex; align-items: center; justify-content: center;
     flex-shrink: 0;
     transition: transform 0.2s;
+    -webkit-tap-highlight-color: transparent;
+    outline: none;
   }
   .settings-btn:active { transform: scale(0.92); }
 
+  /* Поиск */
+  .search-wrap { position: relative; margin-bottom: 20px; }
+  .search-wrap::before {
+    content: '';
+    position: absolute;
+    left: 14px; top: 50%;
+    transform: translateY(-50%);
+    width: 18px; height: 18px;
+    background: var(--hint);
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E") center / contain no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E") center / contain no-repeat;
+    pointer-events: none;
+  }
+  #searchInput {
+    width: 100%;
+    padding: 12px 42px 12px 42px;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--text);
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  #searchInput:focus { border-color: var(--btn); }
+  #searchInput::placeholder { color: var(--hint); }
+
+  .search-clear {
+    position: absolute;
+    right: 10px; top: 50%;
+    transform: translateY(-50%);
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    border: none;
+    background: var(--border);
+    color: var(--hint);
+    cursor: pointer;
+    display: none;
+    align-items: center; justify-content: center;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+    outline: none;
+  }
+  .search-clear.show { display: flex; }
+  .search-clear svg { width: 14px; height: 14px; display: block; }
+
+  .no-results {
+    text-align: center;
+    color: var(--hint);
+    font-size: 14px;
+    padding: 40px 0;
+    display: none;
+  }
+
   /* Топ установок (Карусель) */
   .top-section { margin-bottom: 24px; }
-  .top-title { font-size: 16px; font-weight: 800; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+  .top-title { font-size: 16px; font-weight: 800; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; color: var(--text); }
+  .top-title .svg-icon { color: var(--star); }
   .top-scroll { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px; scrollbar-width: none; }
   .top-scroll::-webkit-scrollbar { display: none; }
   .top-item {
@@ -101,7 +163,7 @@
   .top-item img { width: 40px; height: 40px; border-radius: 10px; object-fit: cover; }
   .top-item-info { display: flex; flex-direction: column; }
   .top-item-name { font-size: 14px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 140px; }
-  .top-item-rating { font-size: 12px; color: var(--star); font-weight: 700; }
+  .top-item-rating { font-size: 12px; color: var(--star); font-weight: 700; display: flex; align-items: center; gap: 3px; }
 
   /* Баннер */
   .featured-banner {
@@ -157,8 +219,9 @@
   .badge.hit { background: var(--badge-hit); }
   .badge.new { background: var(--badge-new); color: #0f2b28; }
   .badge.soon { background: linear-gradient(135deg, #636e72, #b2bec3); }
+  .badge.beta { background: linear-gradient(135deg, #fdcb6e, #e17055); color: #2d2013; }
 
-  .app-rating-badge { font-size: 11px; font-weight: 700; color: var(--star); display: flex; align-items: center; gap: 2px; }
+  .app-rating-badge { font-size: 11px; font-weight: 700; color: var(--star); display: flex; align-items: center; gap: 3px; }
   .app-desc { font-size: 13px; color: var(--hint); font-weight: 500; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
   .app-installs { font-size: 11px; color: var(--hint); margin-top: 4px; opacity: 0.8; }
   
@@ -167,6 +230,8 @@
     border: none; border-radius: 12px;
     padding: 10px 16px; font-size: 14px; font-weight: 700;
     cursor: pointer; flex-shrink: 0;
+    -webkit-tap-highlight-color: transparent;
+    outline: none;
   }
   .download-btn-small.soon-disabled,
   .download-btn-large.soon-disabled {
@@ -186,6 +251,8 @@
     background: transparent; border: none; color: var(--btn);
     font-size: 16px; font-weight: 600; cursor: pointer;
     margin-bottom: 20px; padding: 5px 0;
+    -webkit-tap-highlight-color: transparent;
+    outline: none;
   }
   
   .detail-header { display: flex; gap: 16px; margin-bottom: 24px; align-items: center; position: relative; }
@@ -209,7 +276,7 @@
   .detail-info .dev { font-size: 14px; color: var(--hint); margin-bottom: 8px; }
   
   .rating-row { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; }
-  .stars { color: var(--star); font-size: 16px; letter-spacing: 2px; }
+  .rating-row .stars { color: var(--star); display: flex; gap: 2px; }
   .installs-count { font-size: 13px; color: var(--hint); margin-top: 4px; }
   
   .download-btn-large {
@@ -217,6 +284,8 @@
     border: none; border-radius: 16px; padding: 16px;
     font-size: 16px; font-weight: 700; cursor: pointer;
     margin-bottom: 24px; transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    -webkit-tap-highlight-color: transparent;
+    outline: none;
   }
   .download-btn-large:active { transform: scale(0.96); }
   
@@ -233,6 +302,8 @@
     background: var(--bg); border: 1px solid var(--border);
     color: var(--text); padding: 8px 14px; border-radius: 10px;
     font-size: 13px; font-weight: 600; cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    outline: none;
   }
 
   /* --- Шторки --- */
@@ -250,13 +321,15 @@
     text-align: center;
   }
   .sheet-backdrop.show .sheet { transform: translateY(0); }
-  .sheet-icon { font-size: 48px; margin-bottom: 16px; }
+  .sheet-icon { display: flex; justify-content: center; margin-bottom: 16px; color: var(--btn); }
   .sheet-title { font-size: 20px; font-weight: 800; margin-bottom: 8px; }
   .sheet-text { font-size: 14px; color: var(--hint); line-height: 1.5; margin-bottom: 24px; }
   .sheet-actions { display: flex; gap: 12px; }
   .sheet-actions button {
     flex: 1; padding: 16px; border-radius: 14px; border: none;
     font-size: 16px; font-weight: 700; cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    outline: none;
   }
   .sheet-actions .cancel { background: var(--bg); color: var(--text); }
   .sheet-actions .confirm { background: var(--btn); color: var(--btn-text); }
@@ -285,8 +358,11 @@
   .theme-switch button {
     background: var(--bg); color: var(--text);
     border: 1px solid var(--border);
-    border-radius: 10px; padding: 6px 10px;
+    border-radius: 10px; padding: 8px 10px;
     font-size: 13px; font-weight: 600; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    -webkit-tap-highlight-color: transparent;
+    outline: none;
   }
   .theme-switch button.active {
     background: var(--btn); color: var(--btn-text); border-color: var(--btn);
@@ -302,6 +378,8 @@
     width: 100%; padding: 14px; border-radius: 12px; border: none;
     background: var(--btn); color: var(--btn-text);
     font-size: 15px; font-weight: 700; cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    outline: none;
   }
 </style>
 </head>
@@ -312,12 +390,20 @@
     <div>
       <h1>RazeStore</h1>
     </div>
-    <button class="settings-btn" onclick="openSettings()">⚙️</button>
+    <button class="settings-btn" id="settingsBtn" onclick="openSettings()"></button>
+  </div>
+
+  <!-- Поиск -->
+  <div class="search-wrap">
+    <input type="text" id="searchInput" placeholder="Поиск приложений..." oninput="filterApps(this.value)">
+    <button class="search-clear" id="searchClear" onclick="clearSearch()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
+    </button>
   </div>
   
   <!-- Топ установок -->
   <div class="top-section">
-    <div class="top-title">🔥 Топ недели</div>
+    <div class="top-title" id="topTitle"></div>
     <div class="top-scroll" id="topScroll"></div>
   </div>
 
@@ -329,11 +415,12 @@
     <a href="#" class="featured-btn" onclick="openFeatured(); return false;">Скачать</a>
   </div>
 
+  <div class="no-results" id="noResults">Ничего не найдено</div>
   <div class="grid" id="appsGrid"></div>
 </div>
 
 <div id="detailScreen">
-  <button class="back-btn" onclick="goHome()">← Назад в каталог</button>
+  <button class="back-btn" id="backBtn" onclick="goHome()"></button>
   
   <div class="detail-header">
     <div class="detail-icon-glow" id="dGlow"></div>
@@ -367,7 +454,7 @@
 <!-- Шторка скачивания -->
 <div class="sheet-backdrop" id="downloadSheet" onclick="if(event.target===this)closeDownloadSheet()">
   <div class="sheet">
-    <div class="sheet-icon">📥</div>
+    <div class="sheet-icon" id="downloadIcon"></div>
     <div class="sheet-title">Переход в Telegram</div>
     <div class="sheet-text">Сейчас откроется наш Telegram-канал. Нажми «Скачать файл» в канале, чтобы установить приложение.</div>
     <div class="sheet-actions">
@@ -408,8 +495,8 @@
     <div class="settings-row">
       <span class="settings-label">Тема</span>
       <div class="theme-switch">
-        <button data-theme="light" onclick="setTheme('light')">☀️</button>
-        <button data-theme="dark" onclick="setTheme('dark')">🌙</button>
+        <button data-theme="light" onclick="setTheme('light')" id="themeLight"></button>
+        <button data-theme="dark" onclick="setTheme('dark')" id="themeDark"></button>
         <button data-theme="system" onclick="setTheme('system')">Авто</button>
       </div>
     </div>
@@ -427,6 +514,35 @@
 </div>
 
 <script>
+  /* =====================================================
+     SVG-ИКОНКИ
+     ===================================================== */
+  const ICONS = {
+    gear: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>',
+    fire: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>',
+    star: '<svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2l2.9 6.26L21.5 9.27l-5 4.87 1.18 7.14L12 17.77l-6.68 3.51L6.5 14.14l-5-4.87 6.6-1.01L12 2z"/></svg>',
+    download: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>',
+    sun: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>',
+    moon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>',
+    back: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>'
+  };
+  function icon(name, size = 16) {
+    return `<span class="svg-icon" style="width:${size}px;height:${size}px;">${ICONS[name]}</span>`;
+  }
+
+  /* =====================================================
+     ИНИЦИАЛИЗАЦИЯ ИКОНОК В СТАТИЧНОМ HTML
+     ===================================================== */
+  document.getElementById('settingsBtn').innerHTML = icon('gear', 20);
+  document.getElementById('topTitle').innerHTML = icon('fire', 18) + ' Топ недели';
+  document.getElementById('backBtn').innerHTML = icon('back', 18) + ' Назад в каталог';
+  document.getElementById('downloadIcon').innerHTML = icon('download', 48);
+  document.getElementById('themeLight').innerHTML = icon('sun', 16);
+  document.getElementById('themeDark').innerHTML = icon('moon', 16);
+
+  /* =====================================================
+     TELEGRAM
+     ===================================================== */
   const tg = window.Telegram.WebApp;
   tg.expand();
   tg.ready();
@@ -435,6 +551,9 @@
     if (document.getElementById('detailScreen').style.display === 'block') goHome();
   });
 
+  /* =====================================================
+     ДАННЫЕ
+     ===================================================== */
   const apps = [
     {
       id: 'mymoney',
@@ -567,18 +686,17 @@
     {
       id: 'razecalc',
       name: 'RazeCalc',
-      desc: 'Умный калькулятор с историей вычислений, конвертером величин и тёмной темой. Скоро!',
+      desc: 'Умный калькулятор с историей вычислений, конвертером величин и тёмной темой. Бета-версия!',
       icon: 'https://i.postimg.cc/P5WqpwkH/Screenshot-2026-11-10-20-51-20-021-com-android-chrome-edit.jpg',
-      url: '',
+      url: 'https://t.me/RazeStore_App/14',
       developer: 'Raze Studio',
       rating: '—',
       reviewsCount: '0',
       installs: '0',
       installsNum: 0,
-      badge: null,
-      comingSoon: true,
+      badge: 'beta',
       color: '#0984e3',
-      fullDesc: 'RazeCalc — аккуратный и быстрый калькулятор для повседневных задач. Считает в столбик, хранит историю вычислений, умеет конвертировать единицы длины, веса и валют, а ещё поддерживает инженерный режим и тёмную тему. Никакой рекламы и лишних кнопок — только то, что нужно. Приложение уже на финальной стадии — релиз совсем скоро, следи за каналом.',
+      fullDesc: 'RazeCalc — аккуратный и быстрый калькулятор для повседневных задач. Считает в столбик, хранит историю вычислений, умеет конвертировать единицы длины, веса и валют, а ещё поддерживает инженерный режим и тёмную тему. Никакой рекламы и лишних кнопок — только то, что нужно. Это бета-версия: возможны мелкие баги, будем рады отзывам!',
       reviews: []
     }
   ];
@@ -595,8 +713,11 @@
 
   const grid = document.getElementById('appsGrid');
   const topScroll = document.getElementById('topScroll');
+  const cardEls = [];
 
-  // Рендер топа
+  /* =====================================================
+     РЕНДЕР ТОПА
+     ===================================================== */
   topApps.forEach(app => {
     const item = document.createElement('div');
     item.className = 'top-item';
@@ -604,27 +725,35 @@
       <img src="${app.icon}" alt="${app.name}">
       <div class="top-item-info">
         <div class="top-item-name">${app.name}</div>
-        <div class="top-item-rating">★ ${app.rating}</div>
+        <div class="top-item-rating">${icon('star', 12)} ${app.rating}</div>
       </div>
     `;
     item.onclick = () => showDetail(apps.findIndex(a => a.id === app.id));
     topScroll.appendChild(item);
   });
 
-  // Рендер каталога
+  /* =====================================================
+     РЕНДЕР КАТАЛОГА
+     ===================================================== */
   apps.forEach((app, index) => {
     const card = document.createElement('div');
     card.className = 'app-card';
+    card.dataset.id = app.id;
     card.style.animationDelay = `${index * 0.08}s`;
     
     let badgeHtml = '';
     if (app.badge === 'hit') badgeHtml += '<span class="badge hit">Хит</span>';
     if (app.badge === 'new') badgeHtml += '<span class="badge new">Новинка</span>';
+    if (app.badge === 'beta') badgeHtml += '<span class="badge beta">Бета</span>';
     if (app.comingSoon) badgeHtml += '<span class="badge soon">Скоро</span>';
 
     const btnHtml = app.comingSoon
       ? `<button class="download-btn-small soon-disabled" disabled>Скоро</button>`
       : `<button class="download-btn-small" onclick="event.stopPropagation(); openLink('${app.url}')">Скачать</button>`;
+
+    const ratingHtml = (app.rating === '—')
+      ? ''
+      : `<div class="app-rating-badge">${icon('star', 12)} ${app.rating}</div>`;
 
     card.innerHTML = `
       <div class="app-icon"><img src="${app.icon}" alt="${app.name}" loading="lazy"></div>
@@ -633,16 +762,47 @@
           <div class="app-name">${app.name}</div>
           ${badgeHtml}
         </div>
-        <div class="app-rating-badge">★ ${app.rating}</div>
+        ${ratingHtml}
         <div class="app-desc">${app.desc}</div>
-        <div class="app-installs">${app.comingSoon ? 'Скоро в релизе' : `Установлено ${app.installs} раз`}</div>
+        <div class="app-installs">${app.comingSoon ? 'Скоро в релизе' : (app.installsNum ? `Установлено ${app.installs} раз` : 'Новинка')}</div>
       </div>
       ${btnHtml}
     `;
     card.onclick = () => showDetail(index);
     grid.appendChild(card);
+    cardEls.push(card);
   });
 
+  /* =====================================================
+     ПОИСК
+     ===================================================== */
+  function filterApps(query) {
+    const q = query.trim().toLowerCase();
+    const noResults = document.getElementById('noResults');
+    const clearBtn = document.getElementById('searchClear');
+    let visibleCount = 0;
+
+    clearBtn.classList.toggle('show', q.length > 0);
+
+    apps.forEach((app, index) => {
+      const card = cardEls[index];
+      const haystack = `${app.name} ${app.desc} ${app.developer}`.toLowerCase();
+      const match = q === '' || haystack.includes(q);
+      card.style.display = match ? 'flex' : 'none';
+      if (match) visibleCount++;
+    });
+
+    noResults.style.display = visibleCount === 0 ? 'block' : 'none';
+  }
+
+  function clearSearch() {
+    document.getElementById('searchInput').value = '';
+    filterApps('');
+  }
+
+  /* =====================================================
+     НАВИГАЦИЯ
+     ===================================================== */
   function openFeatured() {
     const idx = apps.findIndex(a => a.id === 'mymoney');
     if (idx !== -1) showDetail(idx);
@@ -680,9 +840,13 @@
     document.getElementById('dName').textContent = app.name;
     document.getElementById('dDev').textContent = app.developer;
     document.getElementById('dRating').textContent = app.rating;
-    document.getElementById('dStars').textContent = '★★★★★';
-    document.getElementById('dReviewsCount').textContent = app.comingSoon ? '' : `(${app.reviewsCount})`;
-    document.getElementById('dInstalls').textContent = app.comingSoon ? 'Скоро в релизе' : `Установлено ${app.installs} раз`;
+    document.getElementById('dStars').innerHTML = app.rating === '—'
+      ? ''
+      : icon('star', 16) + icon('star', 16) + icon('star', 16) + icon('star', 16) + icon('star', 16);
+    document.getElementById('dReviewsCount').textContent = app.comingSoon ? '' : (app.reviewsCount !== '0' ? `(${app.reviewsCount})` : '');
+    document.getElementById('dInstalls').textContent = app.comingSoon
+      ? 'Скоро в релизе'
+      : (app.installsNum ? `Установлено ${app.installs} раз` : 'Только что вышло');
     document.getElementById('dFullDesc').textContent = app.fullDesc;
 
     // Кнопка скачивания / плашка «скоро»
@@ -709,11 +873,9 @@
     } else {
       reviewsSection.style.display = 'block';
 
-      // Подгружаем локальные отзывы
       const savedReviews = JSON.parse(localStorage.getItem('user_reviews') || '{}');
       const myReview = savedReviews[app.id];
 
-      // Сначала показываем отзыв пользователя (если есть)
       if (myReview) {
         const rCard = document.createElement('div');
         rCard.className = 'review-card';
@@ -729,7 +891,6 @@
         reviewsList.appendChild(rCard);
       }
 
-      // Потом базовые
       app.reviews.forEach(review => {
         const rCard = document.createElement('div');
         rCard.className = 'review-card';
@@ -742,6 +903,13 @@
         `;
         reviewsList.appendChild(rCard);
       });
+
+      if (!myReview && app.reviews.length === 0) {
+        const empty = document.createElement('div');
+        empty.className = 'review-text';
+        empty.textContent = 'Пока нет отзывов. Будь первым!';
+        reviewsList.appendChild(empty);
+      }
     }
 
     const main = document.getElementById('mainScreen');
@@ -758,14 +926,15 @@
     window.scrollTo(0, 0);
   }
 
+  /* =====================================================
+     СКАЧИВАНИЕ
+     ===================================================== */
   function showDownloadSheet() {
     document.getElementById('downloadSheet').classList.add('show');
   }
-
   function closeDownloadSheet() {
     document.getElementById('downloadSheet').classList.remove('show');
   }
-
   function confirmDownload() {
     closeDownloadSheet();
     setTimeout(() => { openLink(currentAppUrl); }, 300);
@@ -795,7 +964,6 @@
     body.classList.remove('theme-light', 'theme-dark');
     if (theme === 'light') body.classList.add('theme-light');
     if (theme === 'dark') body.classList.add('theme-dark');
-    // 'system' — ничего не добавляем, работает Telegram-тема
   }
 
   function setTheme(theme) {
@@ -811,7 +979,6 @@
     });
   }
 
-  // Применяем сохранённую тему при старте
   applyTheme(localStorage.getItem('app_theme') || 'system');
   updateThemeButtons();
 
@@ -828,7 +995,6 @@
     reviewRating = 5;
     updateStarRating();
     
-    // Если уже писал, подставить старое
     const savedReviews = JSON.parse(localStorage.getItem('user_reviews') || '{}');
     const myReview = savedReviews[app.id];
     if (myReview) {
@@ -873,7 +1039,7 @@
     localStorage.setItem('user_reviews', JSON.stringify(savedReviews));
     
     closeReviewSheet();
-    showDetail(currentAppIndex); // Перерисовать
+    showDetail(currentAppIndex);
     tg.showAlert('Отзыв сохранен! (Виден только вам)');
   }
 </script>
