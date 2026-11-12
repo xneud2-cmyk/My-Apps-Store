@@ -43,6 +43,22 @@
     overflow-x: hidden;
   }
 
+  /* Ручная тема поверх Telegram-темы */
+  body.theme-light {
+    --bg: #f2f2f7;
+    --card: #ffffff;
+    --text: #000000;
+    --hint: #6e6e73;
+    --border: rgba(0,0,0,0.12);
+  }
+  body.theme-dark {
+    --bg: #1c1c1e;
+    --card: #2c2c2e;
+    --text: #ffffff;
+    --hint: #8e8e93;
+    --border: rgba(150,150,150,0.2);
+  }
+
   /* --- Анимации --- */
   @keyframes cardEnter {
     from { opacity: 0; transform: translateY(20px) scale(0.95); }
@@ -53,8 +69,22 @@
   /* --- Главный экран --- */
   #mainScreen { display: block; animation: fadeIn 0.3s ease; }
   
-  .header { margin-bottom: 20px; display: flex; justify-content: space-between; align-items: flex-end; }
+  .header { margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
   .header h1 { font-size: 28px; font-weight: 800; letter-spacing: -0.5px; }
+
+  .settings-btn {
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--text);
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    font-size: 18px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: transform 0.2s;
+  }
+  .settings-btn:active { transform: scale(0.92); }
 
   /* Топ установок (Карусель) */
   .top-section { margin-bottom: 24px; }
@@ -241,6 +271,38 @@
     margin-bottom: 12px; font-size: 14px; outline: none;
   }
   .review-form textarea { resize: none; height: 80px; }
+
+  /* --- Настройки --- */
+  .settings-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 14px 0; border-bottom: 1px solid var(--border);
+    text-align: left;
+  }
+  .settings-row:last-child { border-bottom: none; }
+  .settings-label { font-size: 15px; font-weight: 600; }
+  .settings-value { font-size: 14px; color: var(--hint); }
+  .theme-switch { display: flex; gap: 6px; }
+  .theme-switch button {
+    background: var(--bg); color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 10px; padding: 6px 10px;
+    font-size: 13px; font-weight: 600; cursor: pointer;
+  }
+  .theme-switch button.active {
+    background: var(--btn); color: var(--btn-text); border-color: var(--btn);
+  }
+  .dev-box {
+    background: var(--bg);
+    border: 1px dashed var(--border);
+    border-radius: 14px;
+    padding: 14px; margin-top: 12px; text-align: left;
+  }
+  .dev-box p { font-size: 13px; color: var(--hint); line-height: 1.45; margin-bottom: 12px; }
+  .dev-box button {
+    width: 100%; padding: 14px; border-radius: 12px; border: none;
+    background: var(--btn); color: var(--btn-text);
+    font-size: 15px; font-weight: 700; cursor: pointer;
+  }
 </style>
 </head>
 <body>
@@ -250,6 +312,7 @@
     <div>
       <h1>RazeStore</h1>
     </div>
+    <button class="settings-btn" onclick="openSettings()">⚙️</button>
   </div>
   
   <!-- Топ установок -->
@@ -333,6 +396,32 @@
         <button class="cancel" onclick="closeReviewSheet()">Отмена</button>
         <button class="confirm" onclick="saveReview()">Отправить</button>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- Шторка настроек -->
+<div class="sheet-backdrop" id="settingsSheet" onclick="if(event.target===this)closeSettings()">
+  <div class="sheet">
+    <div class="sheet-title" style="margin-bottom: 16px;">Настройки</div>
+
+    <div class="settings-row">
+      <span class="settings-label">Тема</span>
+      <div class="theme-switch">
+        <button data-theme="light" onclick="setTheme('light')">☀️</button>
+        <button data-theme="dark" onclick="setTheme('dark')">🌙</button>
+        <button data-theme="system" onclick="setTheme('system')">Авто</button>
+      </div>
+    </div>
+
+    <div class="settings-row">
+      <span class="settings-label">Версия</span>
+      <span class="settings-value">0.3</span>
+    </div>
+
+    <div class="dev-box">
+      <p>Если вы хотите выложить своё приложение в этот магазин приложений — напишите сюда:</p>
+      <button onclick="openLink('https://t.me/Raze_Moff')">Написать</button>
     </div>
   </div>
 </div>
@@ -689,6 +778,42 @@
       window.open(url, '_blank');
     }
   }
+
+  /* =====================================================
+     НАСТРОЙКИ / ТЕМА
+     ===================================================== */
+  function openSettings() {
+    document.getElementById('settingsSheet').classList.add('show');
+    updateThemeButtons();
+  }
+  function closeSettings() {
+    document.getElementById('settingsSheet').classList.remove('show');
+  }
+
+  function applyTheme(theme) {
+    const body = document.body;
+    body.classList.remove('theme-light', 'theme-dark');
+    if (theme === 'light') body.classList.add('theme-light');
+    if (theme === 'dark') body.classList.add('theme-dark');
+    // 'system' — ничего не добавляем, работает Telegram-тема
+  }
+
+  function setTheme(theme) {
+    localStorage.setItem('app_theme', theme);
+    applyTheme(theme);
+    updateThemeButtons();
+  }
+
+  function updateThemeButtons() {
+    const current = localStorage.getItem('app_theme') || 'system';
+    document.querySelectorAll('.theme-switch button').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.theme === current);
+    });
+  }
+
+  // Применяем сохранённую тему при старте
+  applyTheme(localStorage.getItem('app_theme') || 'system');
+  updateThemeButtons();
 
   /* =====================================================
      ОТЗЫВЫ
