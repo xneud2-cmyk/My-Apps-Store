@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>My Apps Store</title>
+<title>RazeStore</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
   :root {
@@ -36,8 +36,7 @@
   #mainScreen { display: block; animation: fadeIn 0.3s ease; }
   
   .header { margin-bottom: 20px; display: flex; justify-content: space-between; align-items: flex-end; }
-  .header h1 { font-size: 28px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 4px; }
-  .header p { font-size: 14px; color: var(--hint); font-weight: 500; }
+  .header h1 { font-size: 28px; font-weight: 800; letter-spacing: -0.5px; }
 
   /* Топ установок (Карусель) */
   .top-section { margin-bottom: 24px; }
@@ -109,6 +108,7 @@
   }
   .badge.hit { background: var(--badge-hit); }
   .badge.new { background: var(--badge-new); color: #0f2b28; }
+  .badge.soon { background: linear-gradient(135deg, #636e72, #b2bec3); }
 
   .app-rating-badge { font-size: 11px; font-weight: 700; color: var(--star); display: flex; align-items: center; gap: 2px; }
   .app-desc { font-size: 13px; color: var(--hint); font-weight: 500; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
@@ -119,6 +119,11 @@
     border: none; border-radius: 12px;
     padding: 10px 16px; font-size: 14px; font-weight: 700;
     cursor: pointer; flex-shrink: 0;
+  }
+  .download-btn-small.soon-disabled,
+  .download-btn-large.soon-disabled {
+    background: var(--card); color: var(--hint);
+    border: 1px dashed var(--border); cursor: default; opacity: 0.8;
   }
 
   /* --- Экран деталей --- */
@@ -225,8 +230,7 @@
 <div id="mainScreen">
   <div class="header">
     <div>
-      <h1>Мои приложения</h1>
-      <p>Только лучшие продукты от Raze Studio</p>
+      <h1>RazeStore</h1>
     </div>
   </div>
   
@@ -265,16 +269,18 @@
     </div>
   </div>
 
-  <button class="download-btn-large" onclick="showDownloadSheet()">Скачать</button>
+  <button class="download-btn-large" id="dDownloadBtn" onclick="showDownloadSheet()">Скачать</button>
   
   <div class="section-title">Описание</div>
   <div class="full-desc" id="dFullDesc"></div>
   
-  <div class="section-title">
-    <span>Отзывы</span>
-    <button class="btn-write-review" onclick="openReviewForm()">Написать</button>
+  <div id="reviewsSection">
+    <div class="section-title">
+      <span>Отзывы</span>
+      <button class="btn-write-review" onclick="openReviewForm()">Написать</button>
+    </div>
+    <div id="reviewsList"></div>
   </div>
-  <div id="reviewsList"></div>
 </div>
 
 <!-- Шторка скачивания -->
@@ -318,7 +324,9 @@
   tg.expand();
   tg.ready();
   
-  tg.BackButton.onClick(() => { goHome(); });
+  tg.BackButton.onClick(() => {
+    if (document.getElementById('detailScreen').style.display === 'block') goHome();
+  });
 
   const apps = [
     {
@@ -331,6 +339,7 @@
       rating: '4.9',
       reviewsCount: '856',
       installs: '10 000+',
+      installsNum: 10000,
       badge: 'hit',
       color: '#2b6cb0',
       fullDesc: 'Надоело гадать, куда уходят карманные деньги? My Money — это простой и красивый трекер расходов и доходов, созданный специально для школьников и студентов. Записывай траты за 10 секунд, ставь финансовые цели (наушники, игры, подарки) и смотри на наглядных графиках, куда утекает твой бюджет. Все данные хранятся только на твоем устройстве, никакой регистрации и серверов.',
@@ -343,12 +352,13 @@
       id: 'deco_real',
       name: 'Deco-Real life',
       desc: '2D-игра про реальную жизнь: работа, кредиты, тюрьма, отдых, покупка машин, квартир и гаражей.',
-      icon: 'https://i.postimg.cc/gjMdwKfm/IMG-20261108-203719-604.jpg',
-      url: 'https://t.me/RazeStore_App/12',
+      icon: 'https://i.postimg.cc/Dz6RR21j/IMG-20261112-190105-826.jpg',
+      url: 'https://t.me/RazeStore_App/13',
       developer: 'Deco-Deni',
       rating: '4.7',
       reviewsCount: '34',
       installs: '1 000+',
+      installsNum: 1000,
       badge: 'new',
       color: '#2d3436',
       fullDesc: '2D-игра про реальную жизнь: работа, кредиты, тюрьма, отдых, покупка машин, квартир и гаражей. Построй свою жизнь с нуля и добейся успеха!',
@@ -367,6 +377,7 @@
       rating: '4.5',
       reviewsCount: '89',
       installs: '500+',
+      installsNum: 500,
       badge: 'new',
       color: '#8B4513',
       fullDesc: 'Добро пожаловать на остров! Тебе нужно делать всё, чтобы выжить: у тебя есть немного денег, и ты можешь заработать ещё — купить еду или улучшить свою базу для выживания! Исследуй, развивайся и не дай себе пропасть в этом суровом месте.',
@@ -384,6 +395,7 @@
       rating: '4.8',
       reviewsCount: '1 204',
       installs: '5 000+',
+      installsNum: 5000,
       badge: null,
       color: '#333',
       fullDesc: 'Погрузись в мир автомобильных номеров! В этой увлекательной игре-кликере тебе предстоит стать настоящим магнатом. Скупай редкие и красивые автомобильные номера, прокачивай свою гарантию, покупай бусты и перепродавай номера другим игрокам за огромные деньги. Идеальный тайм-киллер с простым геймплеем и глубокой экономикой.',
@@ -402,6 +414,7 @@
       rating: '4.7',
       reviewsCount: '342',
       installs: '2 000+',
+      installsNum: 2000,
       badge: null,
       color: '#ff8c00',
       fullDesc: 'Сколько у тебя реально денег в кармане прямо сейчас? My Moneybox поможет быстро посчитать физическую наличность. Просто нажимай на плюсики напротив банкнот и монет, и приложение мгновенно покажет общую сумму.',
@@ -419,17 +432,56 @@
       rating: '4.6',
       reviewsCount: '128',
       installs: '1 000+',
+      installsNum: 1000,
       badge: null,
       color: '#4CAF50',
       fullDesc: 'Проверь свои знания географии! Увлекательная викторина с флагами и столицами стран мира. Играй и расширяй свой кругозор.',
       reviews: [
         { author: 'Павел', stars: '★★★★★', text: 'Крутая викторина, узнал много нового!' }
       ]
+    },
+    {
+      id: 'trucks_sim',
+      name: 'Trucks Sim',
+      desc: 'Симулятор дальнобойщика: фуры, трассы, грузы и ночные рейсы. Скоро в релизе!',
+      icon: 'https://i.postimg.cc/gjV7qmcH/IMG-20261112-190432-514.jpg',
+      url: '',
+      developer: 'Raze Studio',
+      rating: '—',
+      reviewsCount: '0',
+      installs: '0',
+      installsNum: 0,
+      badge: null,
+      comingSoon: true,
+      color: '#e67e22',
+      fullDesc: 'Trucks Sim — это атмосферный симулятор дальнобойщика. Садись за руль тяжёлой фуры, вози грузы между городами, следи за топливом и зарабатывай на новые машины и прицепы. Длинные ночные трассы, ремонт в пути и большой парк техники. Приложение ещё в разработке — релиз совсем скоро, следи за обновлениями в нашем канале.',
+      reviews: []
+    },
+    {
+      id: 'razecalc',
+      name: 'RazeCalc',
+      desc: 'Умный калькулятор с историей вычислений, конвертером величин и тёмной темой. Скоро!',
+      icon: 'https://i.postimg.cc/P5WqpwkH/Screenshot-2026-11-10-20-51-20-021-com-android-chrome-edit.jpg',
+      url: '',
+      developer: 'Raze Studio',
+      rating: '—',
+      reviewsCount: '0',
+      installs: '0',
+      installsNum: 0,
+      badge: null,
+      comingSoon: true,
+      color: '#0984e3',
+      fullDesc: 'RazeCalc — аккуратный и быстрый калькулятор для повседневных задач. Считает в столбик, хранит историю вычислений, умеет конвертировать единицы длины, веса и валют, а ещё поддерживает инженерный режим и тёмную тему. Никакой рекламы и лишних кнопок — только то, что нужно. Приложение уже на финальной стадии — релиз совсем скоро, следи за каналом.',
+      reviews: []
     }
   ];
 
-  // Сортировка топ-3 по установкам (фейково, просто по числу)
-  const topApps = [...apps].sort((a,b) => parseInt(b.installs) - parseInt(a.installs)).slice(0, 3);
+  // Топ недели: исключаем Deco-Island и Номерной Магнат, а также всё «скоро»
+  const topExclude = ['deco_island', 'magnat'];
+  const topApps = [...apps]
+    .filter(a => !a.comingSoon && !topExclude.includes(a.id))
+    .sort((a, b) => (b.installsNum || 0) - (a.installsNum || 0))
+    .slice(0, 3);
 
   let currentAppUrl = '';
   let currentAppIndex = -1;
@@ -459,8 +511,13 @@
     card.style.animationDelay = `${index * 0.08}s`;
     
     let badgeHtml = '';
-    if (app.badge === 'hit') badgeHtml = '<span class="badge hit">Хит</span>';
-    if (app.badge === 'new') badgeHtml = '<span class="badge new">Новинка</span>';
+    if (app.badge === 'hit') badgeHtml += '<span class="badge hit">Хит</span>';
+    if (app.badge === 'new') badgeHtml += '<span class="badge new">Новинка</span>';
+    if (app.comingSoon) badgeHtml += '<span class="badge soon">Скоро</span>';
+
+    const btnHtml = app.comingSoon
+      ? `<button class="download-btn-small soon-disabled" disabled>Скоро</button>`
+      : `<button class="download-btn-small" onclick="event.stopPropagation(); openLink('${app.url}')">Скачать</button>`;
 
     card.innerHTML = `
       <div class="app-icon"><img src="${app.icon}" alt="${app.name}" loading="lazy"></div>
@@ -471,9 +528,9 @@
         </div>
         <div class="app-rating-badge">★ ${app.rating}</div>
         <div class="app-desc">${app.desc}</div>
-        <div class="app-installs">Установлено ${app.installs} раз</div>
+        <div class="app-installs">${app.comingSoon ? 'Скоро в релизе' : `Установлено ${app.installs} раз`}</div>
       </div>
-      <button class="download-btn-small" onclick="event.stopPropagation(); openLink('${app.url}')">Скачать</button>
+      ${btnHtml}
     `;
     card.onclick = () => showDetail(index);
     grid.appendChild(card);
@@ -517,46 +574,68 @@
     document.getElementById('dDev').textContent = app.developer;
     document.getElementById('dRating').textContent = app.rating;
     document.getElementById('dStars').textContent = '★★★★★';
-    document.getElementById('dReviewsCount').textContent = `(${app.reviewsCount})`;
-    document.getElementById('dInstalls').textContent = `Установлено ${app.installs} раз`;
+    document.getElementById('dReviewsCount').textContent = app.comingSoon ? '' : `(${app.reviewsCount})`;
+    document.getElementById('dInstalls').textContent = app.comingSoon ? 'Скоро в релизе' : `Установлено ${app.installs} раз`;
     document.getElementById('dFullDesc').textContent = app.fullDesc;
 
-    // Подгружаем локальные отзывы
-    const savedReviews = JSON.parse(localStorage.getItem('user_reviews') || '{}');
-    const myReview = savedReviews[app.id];
-
-    const reviewsList = document.getElementById('reviewsList');
-    reviewsList.innerHTML = '';
-    
-    // Сначала показываем отзыв пользователя (если есть)
-    if (myReview) {
-      const rCard = document.createElement('div');
-      rCard.className = 'review-card';
-      rCard.style.borderLeft = '3px solid var(--btn)';
-      rCard.style.paddingLeft = '10px';
-      rCard.innerHTML = `
-        <div class="review-header">
-          <span class="review-author">${myReview.name} (Вы)</span>
-          <span class="review-stars">${'★'.repeat(myReview.stars)}${'☆'.repeat(5-myReview.stars)}</span>
-        </div>
-        <div class="review-text">${myReview.text}</div>
-      `;
-      reviewsList.appendChild(rCard);
+    // Кнопка скачивания / плашка «скоро»
+    const dlBtn = document.getElementById('dDownloadBtn');
+    if (app.comingSoon) {
+      dlBtn.textContent = 'Скоро в релизе';
+      dlBtn.disabled = true;
+      dlBtn.classList.add('soon-disabled');
+      dlBtn.onclick = null;
+    } else {
+      dlBtn.textContent = 'Скачать';
+      dlBtn.disabled = false;
+      dlBtn.classList.remove('soon-disabled');
+      dlBtn.onclick = showDownloadSheet;
     }
 
-    // Потом базовые
-    app.reviews.forEach(review => {
-      const rCard = document.createElement('div');
-      rCard.className = 'review-card';
-      rCard.innerHTML = `
-        <div class="review-header">
-          <span class="review-author">${review.author}</span>
-          <span class="review-stars">${review.stars}</span>
-        </div>
-        <div class="review-text">${review.text}</div>
-      `;
-      reviewsList.appendChild(rCard);
-    });
+    // Блок отзывов скрываем для «скоро»
+    const reviewsSection = document.getElementById('reviewsSection');
+    const reviewsList = document.getElementById('reviewsList');
+    reviewsList.innerHTML = '';
+
+    if (app.comingSoon) {
+      reviewsSection.style.display = 'none';
+    } else {
+      reviewsSection.style.display = 'block';
+
+      // Подгружаем локальные отзывы
+      const savedReviews = JSON.parse(localStorage.getItem('user_reviews') || '{}');
+      const myReview = savedReviews[app.id];
+
+      // Сначала показываем отзыв пользователя (если есть)
+      if (myReview) {
+        const rCard = document.createElement('div');
+        rCard.className = 'review-card';
+        rCard.style.borderLeft = '3px solid var(--btn)';
+        rCard.style.paddingLeft = '10px';
+        rCard.innerHTML = `
+          <div class="review-header">
+            <span class="review-author">${myReview.name} (Вы)</span>
+            <span class="review-stars">${'★'.repeat(myReview.stars)}${'☆'.repeat(5-myReview.stars)}</span>
+          </div>
+          <div class="review-text">${myReview.text}</div>
+        `;
+        reviewsList.appendChild(rCard);
+      }
+
+      // Потом базовые
+      app.reviews.forEach(review => {
+        const rCard = document.createElement('div');
+        rCard.className = 'review-card';
+        rCard.innerHTML = `
+          <div class="review-header">
+            <span class="review-author">${review.author}</span>
+            <span class="review-stars">${review.stars}</span>
+          </div>
+          <div class="review-text">${review.text}</div>
+        `;
+        reviewsList.appendChild(rCard);
+      });
+    }
 
     const main = document.getElementById('mainScreen');
     const detail = document.getElementById('detailScreen');
@@ -599,13 +678,15 @@
   let reviewRating = 5;
 
   function openReviewForm() {
+    const app = apps[currentAppIndex];
+    if (!app || app.comingSoon) return;
+
     document.getElementById('reviewSheet').classList.add('show');
     reviewRating = 5;
     updateStarRating();
     
     // Если уже писал, подставить старое
     const savedReviews = JSON.parse(localStorage.getItem('user_reviews') || '{}');
-    const app = apps[currentAppIndex];
     const myReview = savedReviews[app.id];
     if (myReview) {
       document.getElementById('reviewName').value = myReview.name;
@@ -637,11 +718,13 @@
   }
 
   function saveReview() {
+    const app = apps[currentAppIndex];
+    if (!app || app.comingSoon) return;
+
     const name = document.getElementById('reviewName').value.trim() || 'Аноним';
     const text = document.getElementById('reviewText').value.trim();
     if (!text) { tg.showAlert('Напиши текст отзыва'); return; }
 
-    const app = apps[currentAppIndex];
     const savedReviews = JSON.parse(localStorage.getItem('user_reviews') || '{}');
     savedReviews[app.id] = { name, text, stars: reviewRating };
     localStorage.setItem('user_reviews', JSON.stringify(savedReviews));
